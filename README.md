@@ -7,7 +7,7 @@
 
 ## 📹 Video de Defensa del Desafío
 > **Enlace del Video de Defensa:**  
-> [COLOCA_AQUÍ_EL_ENLACE_A_TU_VIDEO_DE_YOUTUBE_O_DRIVE](https://youtu.be/TU_ENLACE_AQUI)
+> [Ver Video de Defensa en Google Drive](https://drive.google.com/file/d/1zVfngARTgdPVh22VqFet8WgOCJkE1X5V/view?usp=drive_link)
 > 
 > *Nota: Según la guía, la defensa debe iniciar demostrando la funcionalidad de la app y posteriormente explicando la arquitectura y código.*
 
