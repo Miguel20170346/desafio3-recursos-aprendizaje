@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// URL base para la API REST. Se puede cambiar en tiempo de ejecución o desde la pantalla de perfil.
-export const DEFAULT_API_URL = 'https://6709849cafc569fb2fbf01a1.mockapi.io/api/v1';
+// URL base para la API REST conectada a MockAPI del usuario
+export const DEFAULT_API_URL = 'https://6acae1703115bcc9582113ca.mockapi.io';
 const API_URL_KEY = '@api_base_url';
 
 export const getApiBaseUrl = async (): Promise<string> => {
