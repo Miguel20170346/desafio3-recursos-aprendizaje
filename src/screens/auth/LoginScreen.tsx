@@ -144,10 +144,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
           <Divider style={styles.divider} />
 
-          {/* Botones de demo para evaluación rápida */}
-          <Text variant="labelMedium" style={styles.demoLabel}>
-            Credenciales de prueba rápida para evaluación:
-          </Text>
+          {/* Botones de acceso rápido */}
           <View style={styles.demoButtonsContainer}>
             <Button
               mode="outlined"
