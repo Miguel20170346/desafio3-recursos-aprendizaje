@@ -19,32 +19,36 @@ import {
   Dialog,
   Portal,
 } from 'react-native-paper';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { getResources, deleteResource } from '../../api/resourceService';
 import ResourceCard from '../../components/ResourceCard';
+import { Resource, RootStackParamList } from '../../types';
+
+type TeacherDashboardScreenProps = NativeStackScreenProps<RootStackParamList, 'TeacherDashboard'>;
 
 const FILTER_TYPES = ['Todos', 'Libro', 'Video', 'Artículo', 'Tutorial'];
 
-export default function TeacherDashboardScreen({ navigation }) {
+export default function TeacherDashboardScreen({ navigation }: TeacherDashboardScreenProps) {
   const theme = useTheme();
 
-  const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   // Búsqueda y Filtros
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState('Todos');
-  const [sortOption, setSortOption] = useState('title_asc');
-  const [sortMenuVisible, setSortMenuVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<string>('Todos');
+  const [sortOption, setSortOption] = useState<string>('title_asc');
+  const [sortMenuVisible, setSortMenuVisible] = useState<boolean>(false);
 
   // Diálogo de Confirmación para Eliminación (DELETE)
-  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-  const [resourceToDelete, setResourceToDelete] = useState(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState<boolean>(false);
+  const [resourceToDelete, setResourceToDelete] = useState<Resource | null>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   // Snackbar
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
 
   const fetchResourcesData = useCallback(async () => {
     try {
@@ -76,12 +80,12 @@ export default function TeacherDashboardScreen({ navigation }) {
   };
 
   // 2. Modificar recurso existente
-  const handleEdit = (resource) => {
+  const handleEdit = (resource: Resource) => {
     navigation.navigate('ResourceForm', { resource });
   };
 
   // 3. Confirmación antes de eliminar recurso
-  const promptDelete = (resource) => {
+  const promptDelete = (resource: Resource) => {
     setResourceToDelete(resource);
     setDeleteDialogVisible(true);
   };
@@ -97,7 +101,7 @@ export default function TeacherDashboardScreen({ navigation }) {
       setResourceToDelete(null);
       setSnackbarMessage('Recurso eliminado exitosamente de la API (DELETE).');
       setSnackbarVisible(true);
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'No se pudo eliminar el recurso.');
     } finally {
       setIsDeleting(false);
@@ -358,7 +362,6 @@ const styles = StyleSheet.create({
   },
   emptyIcon: {
     fontSize: 50,
-    marginBottom: 10,
   },
   emptyTitle: {
     fontWeight: '700',

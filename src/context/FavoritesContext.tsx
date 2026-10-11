@@ -1,13 +1,14 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from './AuthContext';
+import { FavoritesContextType } from '../types';
 
-const FavoritesContext = createContext();
+const FavoritesContext = createContext<FavoritesContextType>({} as FavoritesContextType);
 
-export const FavoritesProvider = ({ children }) => {
+export const FavoritesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
-  const [favoriteIds, setFavoriteIds] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const storageKey = user ? `@favorites_user_${user.id}` : null;
 
@@ -39,12 +40,12 @@ export const FavoritesProvider = ({ children }) => {
   }, [storageKey]);
 
   // Alternar favorito (agregar / quitar)
-  const toggleFavorite = async (resourceId) => {
+  const toggleFavorite = async (resourceId: string | number) => {
     if (!storageKey) return;
 
     try {
       const idStr = String(resourceId);
-      let updated;
+      let updated: string[];
       if (favoriteIds.includes(idStr)) {
         updated = favoriteIds.filter((id) => id !== idStr);
       } else {
@@ -58,7 +59,7 @@ export const FavoritesProvider = ({ children }) => {
     }
   };
 
-  const isFavorite = (resourceId) => {
+  const isFavorite = (resourceId: string | number): boolean => {
     return favoriteIds.includes(String(resourceId));
   };
 

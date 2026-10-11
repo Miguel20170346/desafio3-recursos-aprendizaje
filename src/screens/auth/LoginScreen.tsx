@@ -5,7 +5,6 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Image,
 } from 'react-native';
 import {
   TextInput,
@@ -16,17 +15,21 @@ import {
   useTheme,
   Divider,
 } from 'react-native-paper';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAuth } from '../../context/AuthContext';
+import { RootStackParamList } from '../../types';
 
-export default function LoginScreen({ navigation }) {
+type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
+
+export default function LoginScreen({ navigation }: LoginScreenProps) {
   const theme = useTheme();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const handleLogin = async () => {
     if (!email.trim() || !password) {
@@ -40,7 +43,7 @@ export default function LoginScreen({ navigation }) {
     setLoading(false);
 
     if (!result.success) {
-      setErrorMessage(result.message);
+      setErrorMessage(result.message || 'Error al iniciar sesión');
     }
   };
 

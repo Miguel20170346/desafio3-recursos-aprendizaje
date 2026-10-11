@@ -1,14 +1,15 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { checkPasswordRules, validateEmail } from '../utils/validation';
+import { User, UserRole, AuthContextType } from '../types';
 
-const AuthContext = createContext();
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 const USERS_STORAGE_KEY = '@app_registered_users';
 const CURRENT_USER_KEY = '@app_active_session';
 
 // Usuarios de prueba preconfigurados con contraseñas que cumplen las reglas de la rúbrica
-const INITIAL_USERS = [
+const INITIAL_USERS: User[] = [
   {
     id: 'u-docente',
     name: 'Prof. Carlos Mendoza',
@@ -25,9 +26,9 @@ const INITIAL_USERS = [
   },
 ];
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Inicializar almacenamiento de usuarios y recuperar sesión activa
   useEffect(() => {
@@ -53,10 +54,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Iniciar sesión
-  const login = async (email, password) => {
+  const login = async (email: string, password: string) => {
     try {
       const storedUsers = await AsyncStorage.getItem(USERS_STORAGE_KEY);
-      const users = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
+      const users: User[] = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
 
       const found = users.find(
         (u) => u.email.toLowerCase().trim() === email.toLowerCase().trim() && u.password === password
@@ -69,13 +70,23 @@ export const AuthProvider = ({ children }) => {
       setUser(found);
       await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify(found));
       return { success: true, user: found };
-    } catch (error) {
+    } catch {
       return { success: false, message: 'Error interno al iniciar sesión.' };
     }
   };
 
   // Registro de usuario
-  const register = async ({ name, email, password, role }) => {
+  const register = async ({
+    name,
+    email,
+    password,
+    role,
+  }: {
+    name: string;
+    email: string;
+    password: string;
+    role: UserRole;
+  }) => {
     if (!name || name.trim().length < 3) {
       return { success: false, message: 'El nombre debe tener al menos 3 caracteres.' };
     }
@@ -98,14 +109,14 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const storedUsers = await AsyncStorage.getItem(USERS_STORAGE_KEY);
-      const users = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
+      const users: User[] = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
 
       const emailExists = users.some((u) => u.email.toLowerCase().trim() === email.toLowerCase().trim());
       if (emailExists) {
         return { success: false, message: 'El correo electrónico ya se encuentra registrado.' };
       }
 
-      const newUser = {
+      const newUser: User = {
         id: `u-${Date.now()}`,
         name: name.trim(),
         email: email.trim().toLowerCase(),
@@ -121,7 +132,7 @@ export const AuthProvider = ({ children }) => {
       await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
 
       return { success: true, user: newUser };
-    } catch (error) {
+    } catch {
       return { success: false, message: 'Ocurrió un error al registrar el usuario.' };
     }
   };

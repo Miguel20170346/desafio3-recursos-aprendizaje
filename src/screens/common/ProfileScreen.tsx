@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Alert, View } from 'react-native';
 import {
   Text,
   Surface,
   Button,
   Chip,
   TextInput,
-  Divider,
-  useTheme,
   Dialog,
   Portal,
   Snackbar,
@@ -16,13 +14,12 @@ import { useAuth } from '../../context/AuthContext';
 import { getApiBaseUrl, setApiBaseUrl, DEFAULT_API_URL } from '../../api/config';
 
 export default function ProfileScreen() {
-  const theme = useTheme();
   const { user, logout } = useAuth();
 
-  const [apiUrl, setApiUrl] = useState('');
-  const [logoutDialogVisible, setLogoutDialogVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [apiUrl, setApiUrl] = useState<string>('');
+  const [logoutDialogVisible, setLogoutDialogVisible] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const loadUrl = async () => {

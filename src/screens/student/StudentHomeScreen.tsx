@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import {
   Searchbar,
-  SegmentedButtons,
   Menu,
   Button,
   Text,
@@ -20,6 +19,7 @@ import { getResources, rateResource } from '../../api/resourceService';
 import { useFavorites } from '../../context/FavoritesContext';
 import ResourceCard from '../../components/ResourceCard';
 import RatingDialog from '../../components/RatingDialog';
+import { Resource } from '../../types';
 
 const FILTER_TYPES = ['Todos', 'Libro', 'Video', 'Artículo', 'Tutorial'];
 
@@ -27,23 +27,23 @@ export default function StudentHomeScreen() {
   const theme = useTheme();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   // Filtros y ordenamiento
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState('Todos');
-  const [sortOption, setSortOption] = useState('title_asc'); // title_asc, title_desc, rating_desc
-  const [sortMenuVisible, setSortMenuVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<string>('Todos');
+  const [sortOption, setSortOption] = useState<string>('title_asc'); // title_asc, title_desc, rating_desc
+  const [sortMenuVisible, setSortMenuVisible] = useState<boolean>(false);
 
   // Diálogo de calificación
-  const [ratingModalVisible, setRatingModalVisible] = useState(false);
-  const [selectedResource, setSelectedResource] = useState(null);
+  const [ratingModalVisible, setRatingModalVisible] = useState<boolean>(false);
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
 
   // Snackbar de feedback visual
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
 
   const fetchResourceData = useCallback(async () => {
     try {
@@ -67,7 +67,7 @@ export default function StudentHomeScreen() {
   };
 
   // Manejo de Favoritos
-  const handleToggleFavorite = (id) => {
+  const handleToggleFavorite = (id: string | number) => {
     toggleFavorite(id);
     const currentlyFav = isFavorite(id);
     setSnackbarMessage(
@@ -77,12 +77,12 @@ export default function StudentHomeScreen() {
   };
 
   // Manejo de Calificación
-  const handleOpenRating = (resource) => {
+  const handleOpenRating = (resource: Resource) => {
     setSelectedResource(resource);
     setRatingModalVisible(true);
   };
 
-  const handleSubmitRating = async (stars) => {
+  const handleSubmitRating = async (stars: number) => {
     if (!selectedResource) return;
     try {
       const updated = await rateResource(selectedResource.id, stars);
@@ -93,7 +93,7 @@ export default function StudentHomeScreen() {
         setSnackbarMessage(`¡Gracias! Calificaste con ${stars} estrellas ⭐`);
         setSnackbarVisible(true);
       }
-    } catch (error) {
+    } catch {
       setSnackbarMessage('Error al enviar la calificación.');
       setSnackbarVisible(true);
     }

@@ -14,7 +14,7 @@
 ---
 
 ## 🚀 Descripción de la Aplicación
-Aplicación móvil desarrollada con **React Native** y **Expo** para la gestión de recursos educativos especializados en Ingeniería de Sistemas (Libros, Videos, Artículos y Tutoriales). La aplicación consume una **API REST dinámica** y proporciona autenticación con control de acceso basado en roles (**Estudiante** y **Docente**).
+Aplicación móvil desarrollada con **React Native**, **TypeScript (TSX)** y **Expo** para la gestión de recursos educativos especializados en Ingeniería de Sistemas (Libros, Videos, Artículos y Tutoriales). La aplicación consume una **API REST dinámica** y proporciona autenticación con control de acceso basado en roles (**Estudiante** y **Docente**).
 
 ---
 
@@ -115,37 +115,40 @@ La app viene preconfigurada con un servicio desacoplado en `src/api/resourceServ
 ## 📂 Estructura del Proyecto
 
 ```text
-├── App.js                     # Punto de entrada con proveedores globales
+├── App.tsx                    # Punto de entrada con proveedores globales
 ├── app.json                   # Configuración del proyecto Expo
 ├── package.json               # Dependencias del proyecto
+├── tsconfig.json              # Configuración de compilador TypeScript
 └── src/
+    ├── types/
+    │   └── index.ts           # Interfaces y tipos fuertemente tipados
     ├── api/
-    │   ├── config.js          # URL base y configuración dinámica de API
-    │   └── resourceService.js # Peticiones REST (GET, POST, PUT, DELETE, Rating)
+    │   ├── config.ts          # URL base y configuración dinámica de API
+    │   └── resourceService.ts # Peticiones REST (GET, POST, PUT, DELETE, Rating)
     ├── components/
-    │   ├── RatingDialog.js    # Modal interactivo de calificación 1 a 5 estrellas
-    │   └── ResourceCard.js    # Tarjeta reutilizable de visualización de recurso
+    │   ├── RatingDialog.tsx   # Modal interactivo de calificación 1 a 5 estrellas
+    │   └── ResourceCard.tsx   # Tarjeta reutilizable de visualización de recurso
     ├── context/
-    │   ├── AuthContext.js     # Gestión de usuarios, sesiones y roles
-    │   └── FavoritesContext.js# Gestión persistente de favoritos del estudiante
+    │   ├── AuthContext.tsx    # Gestión de usuarios, sesiones y roles
+    │   └── FavoritesContext.tsx # Gestión persistente de favoritos del estudiante
     ├── navigation/
-    │   ├── AppNavigator.js    # Navegación condicional por roles y autenticación
-    │   └── StudentTabs.js     # Navegación por pestañas para estudiantes
+    │   ├── AppNavigator.tsx   # Navegación condicional por roles y autenticación
+    │   └── StudentTabs.tsx    # Navegación por pestañas para estudiantes
     ├── screens/
     │   ├── auth/
-    │   │   ├── LoginScreen.js       # Pantalla de inicio de sesión con botones demo
-    │   │   └── RegisterScreen.js    # Pantalla de registro con validación en vivo
+    │   │   ├── LoginScreen.tsx       # Pantalla de inicio de sesión con botones demo
+    │   │   └── RegisterScreen.tsx    # Pantalla de registro con validación en vivo
     │   ├── common/
-    │   │   └── ProfileScreen.js     # Información de usuario y ajuste de API
+    │   │   └── ProfileScreen.tsx     # Información de usuario y ajuste de API
     │   ├── student/
-    │   │   ├── FavoritesScreen.js   # Lista filtrada de favoritos del estudiante
-    │   │   └── StudentHomeScreen.js # Catálogo con búsqueda, filtros y rating
+    │   │   ├── FavoritesScreen.tsx   # Lista filtrada de favoritos del estudiante
+    │   │   └── StudentHomeScreen.tsx # Catálogo con búsqueda, filtros y rating
     │   └── teacher/
-    │       ├── ResourceFormScreen.js    # Formulario para crear (POST) o editar (PUT)
-    │       └── TeacherDashboardScreen.js# Panel docente con CRUD y confirmación
+    │       ├── ResourceFormScreen.tsx    # Formulario para crear (POST) o editar (PUT)
+    │       └── TeacherDashboardScreen.tsx# Panel docente con CRUD y confirmación
     ├── theme/
-    │   └── theme.js           # Paleta de colores e identidad gráfica
+    │   └── theme.ts           # Paleta de colores e identidad gráfica
     └── utils/
-        ├── mockData.js        # Recursos iniciales de Ingeniería de Sistemas
-        └── validation.js      # Validador de contraseñas, emails y URLs
+        ├── mockData.ts        # Recursos iniciales de Ingeniería de Sistemas
+        └── validation.ts      # Validador de contraseñas, emails y URLs
 ```

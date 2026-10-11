@@ -13,23 +13,25 @@ import {
   Surface,
   HelperText,
   SegmentedButtons,
-  useTheme,
 } from 'react-native-paper';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAuth } from '../../context/AuthContext';
 import { checkPasswordRules, validateEmail } from '../../utils/validation';
+import { RootStackParamList, UserRole } from '../../types';
 
-export default function RegisterScreen({ navigation }) {
-  const theme = useTheme();
+type RegisterScreenProps = NativeStackScreenProps<RootStackParamList, 'Register'>;
+
+export default function RegisterScreen({ navigation }: RegisterScreenProps) {
   const { register } = useAuth();
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState('Estudiante');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [role, setRole] = useState<UserRole>('Estudiante');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   // Verificación reactiva de reglas de contraseña
   const rules = checkPasswordRules(password);
@@ -66,7 +68,7 @@ export default function RegisterScreen({ navigation }) {
     setLoading(false);
 
     if (!result.success) {
-      setErrorMessage(result.message);
+      setErrorMessage(result.message || 'Error al completar el registro.');
     }
   };
 
@@ -90,7 +92,7 @@ export default function RegisterScreen({ navigation }) {
           </Text>
           <SegmentedButtons
             value={role}
-            onValueChange={setRole}
+            onValueChange={(val) => setRole(val as UserRole)}
             buttons={[
               {
                 value: 'Estudiante',

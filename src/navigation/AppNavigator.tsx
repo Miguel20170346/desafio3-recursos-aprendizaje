@@ -11,8 +11,9 @@ import StudentTabs from './StudentTabs';
 import TeacherDashboardScreen from '../screens/teacher/TeacherDashboardScreen';
 import ResourceFormScreen from '../screens/teacher/ResourceFormScreen';
 import ProfileScreen from '../screens/common/ProfileScreen';
+import { RootStackParamList } from '../types';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
   const { user, loading } = useAuth();

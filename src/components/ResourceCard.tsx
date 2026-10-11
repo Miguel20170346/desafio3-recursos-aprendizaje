@@ -1,6 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, Image, Linking, Alert } from 'react-native';
-import { Card, Text, Chip, IconButton, Button, useTheme } from 'react-native-paper';
+import { View, StyleSheet, Linking, Alert } from 'react-native';
+import { Card, Text, Chip, IconButton, Button } from 'react-native-paper';
+import { Resource, UserRole } from '../types';
+
+interface ResourceCardProps {
+  resource: Resource;
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string | number) => void;
+  onRate?: (resource: Resource) => void;
+  onEdit?: (resource: Resource) => void;
+  onDelete?: (resource: Resource) => void;
+  role?: UserRole;
+}
 
 export default function ResourceCard({
   resource,
@@ -10,9 +21,7 @@ export default function ResourceCard({
   onEdit,
   onDelete,
   role = 'Estudiante',
-}) {
-  const theme = useTheme();
-
+}: ResourceCardProps) {
   const handleOpenLink = async () => {
     if (!resource.enlace) {
       Alert.alert('Aviso', 'Este recurso no tiene enlace disponible.');
@@ -30,7 +39,7 @@ export default function ResourceCard({
     }
   };
 
-  const getTypeColor = (tipo) => {
+  const getTypeColor = (tipo: string) => {
     switch (tipo?.toLowerCase()) {
       case 'libro':
         return '#2563EB';

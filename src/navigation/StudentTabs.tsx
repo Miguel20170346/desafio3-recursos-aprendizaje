@@ -6,8 +6,9 @@ import { useTheme } from 'react-native-paper';
 import StudentHomeScreen from '../screens/student/StudentHomeScreen';
 import FavoritesScreen from '../screens/student/FavoritesScreen';
 import ProfileScreen from '../screens/common/ProfileScreen';
+import { StudentTabParamList } from '../types';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<StudentTabParamList>();
 
 export default function StudentTabs() {
   const theme = useTheme();
@@ -16,7 +17,7 @@ export default function StudentTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+          let iconName: keyof typeof Ionicons.glyphMap = 'help-circle-outline';
 
           if (route.name === 'Recursos') {
             iconName = focused ? 'library' : 'library-outline';

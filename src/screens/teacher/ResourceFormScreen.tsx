@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  View,
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
@@ -14,36 +13,38 @@ import {
   Surface,
   HelperText,
   SegmentedButtons,
-  useTheme,
 } from 'react-native-paper';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { createResource, updateResource } from '../../api/resourceService';
 import { validateUrl } from '../../utils/validation';
+import { Resource, ResourceType, RootStackParamList } from '../../types';
 
-const TYPE_OPTIONS = [
+type ResourceFormScreenProps = NativeStackScreenProps<RootStackParamList, 'ResourceForm'>;
+
+const TYPE_OPTIONS: { value: ResourceType; label: string }[] = [
   { value: 'Libro', label: 'Libro' },
   { value: 'Video', label: 'Video' },
   { value: 'Artículo', label: 'Artículo' },
   { value: 'Tutorial', label: 'Tutorial' },
 ];
 
-export default function ResourceFormScreen({ route, navigation }) {
-  const theme = useTheme();
-  const existingResource = route.params?.resource;
+export default function ResourceFormScreen({ route, navigation }: ResourceFormScreenProps) {
+  const existingResource: Resource | undefined = route.params?.resource;
   const isEditing = Boolean(existingResource);
 
   // Formulario prellenado si es edición
-  const [titulo, setTitulo] = useState(existingResource?.titulo || '');
-  const [descripcion, setDescripcion] = useState(existingResource?.descripcion || '');
-  const [tipo, setTipo] = useState(existingResource?.tipo || 'Libro');
-  const [enlace, setEnlace] = useState(existingResource?.enlace || '');
-  const [imagen, setImagen] = useState(existingResource?.imagen || '');
+  const [titulo, setTitulo] = useState<string>(existingResource?.titulo || '');
+  const [descripcion, setDescripcion] = useState<string>(existingResource?.descripcion || '');
+  const [tipo, setTipo] = useState<ResourceType>(existingResource?.tipo || 'Libro');
+  const [enlace, setEnlace] = useState<string>(existingResource?.enlace || '');
+  const [imagen, setImagen] = useState<string>(existingResource?.imagen || '');
 
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
 
   // Validación rigurosa de campos del formulario
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!titulo.trim()) {
       newErrors.titulo = 'El título del recurso es obligatorio.';
@@ -86,7 +87,7 @@ export default function ResourceFormScreen({ route, navigation }) {
           'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80',
       };
 
-      if (isEditing) {
+      if (isEditing && existingResource) {
         // OPERACIÓN PUT
         await updateResource(existingResource.id, payload);
         Alert.alert('Éxito', 'Recurso modificado correctamente (PUT).', [
@@ -99,7 +100,7 @@ export default function ResourceFormScreen({ route, navigation }) {
           { text: 'Aceptar', onPress: () => navigation.goBack() },
         ]);
       }
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'No fue posible guardar el recurso.');
     } finally {
       setLoading(false);
@@ -117,7 +118,7 @@ export default function ResourceFormScreen({ route, navigation }) {
             {isEditing ? 'Modificar Recurso' : 'Nuevo Recurso Educativo'}
           </Text>
           <Text variant="bodySmall" style={styles.formSubtitle}>
-            {isEditing
+            {isEditing && existingResource
               ? `Editando recurso con ID: #${existingResource.id}`
               : 'Completa los datos para registrar un recurso en el catálogo'}
           </Text>
@@ -128,7 +129,7 @@ export default function ResourceFormScreen({ route, navigation }) {
           </Text>
           <SegmentedButtons
             value={tipo}
-            onValueChange={setTipo}
+            onValueChange={(val) => setTipo(val as ResourceType)}
             buttons={TYPE_OPTIONS}
             style={styles.segmented}
           />

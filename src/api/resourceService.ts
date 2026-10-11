@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApiBaseUrl } from './config';
 import { INITIAL_RESOURCES } from '../utils/mockData';
+import { Resource } from '../types';
 
 const LOCAL_STORAGE_KEY = '@learning_resources_cache';
 
 // Inicializar almacenamiento local si está vacío
-const ensureLocalData = async () => {
+const ensureLocalData = async (): Promise<Resource[]> => {
   const cached = await AsyncStorage.getItem(LOCAL_STORAGE_KEY);
   if (!cached) {
     await AsyncStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(INITIAL_RESOURCES));
@@ -15,7 +16,7 @@ const ensureLocalData = async () => {
 };
 
 // 1. OBTENER TODOS LOS RECURSOS (GET)
-export const getResources = async () => {
+export const getResources = async (): Promise<Resource[]> => {
   const baseUrl = await getApiBaseUrl();
   try {
     const response = await fetch(`${baseUrl}/recursos`, {
@@ -27,19 +28,18 @@ export const getResources = async () => {
       const data = await response.json();
       if (Array.isArray(data) && data.length > 0) {
         await AsyncStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
-        return data;
+        return data as Resource[];
       }
     }
-    // Si la API remota devuelve vacío o error, usar caché local
     return await ensureLocalData();
-  } catch (error) {
-    console.log('Fallo conexión a API remota, usando almacenamiento local persistente:', error.message);
+  } catch (error: any) {
+    console.log('Fallo conexión a API remota, usando almacenamiento local persistente:', error?.message);
     return await ensureLocalData();
   }
 };
 
 // 2. CREAR UN RECURSO (POST)
-export const createResource = async (resource) => {
+export const createResource = async (resource: Omit<Resource, 'id'>): Promise<Resource> => {
   const baseUrl = await getApiBaseUrl();
   const newPayload = {
     ...resource,
@@ -55,18 +55,18 @@ export const createResource = async (resource) => {
     });
 
     if (response.ok) {
-      const created = await response.json();
+      const created: Resource = await response.json();
       const local = await ensureLocalData();
       await AsyncStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([created, ...local]));
       return created;
     }
-  } catch (error) {
-    console.log('Error POST en API externa, guardando en local:', error.message);
+  } catch (error: any) {
+    console.log('Error POST en API externa, guardando en local:', error?.message);
   }
 
   // Fallback local
   const local = await ensureLocalData();
-  const created = {
+  const created: Resource = {
     ...newPayload,
     id: String(Date.now()),
   };
@@ -76,7 +76,10 @@ export const createResource = async (resource) => {
 };
 
 // 3. ACTUALIZAR UN RECURSO (PUT)
-export const updateResource = async (id, updatedFields) => {
+export const updateResource = async (
+  id: string | number,
+  updatedFields: Partial<Resource>
+): Promise<Resource | null> => {
   const baseUrl = await getApiBaseUrl();
 
   try {
@@ -87,19 +90,19 @@ export const updateResource = async (id, updatedFields) => {
     });
 
     if (response.ok) {
-      const updated = await response.json();
+      const updated: Resource = await response.json();
       const local = await ensureLocalData();
       const updatedList = local.map((r) => (String(r.id) === String(id) ? { ...r, ...updated } : r));
       await AsyncStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedList));
       return updated;
     }
-  } catch (error) {
-    console.log('Error PUT en API externa, actualizando en local:', error.message);
+  } catch (error: any) {
+    console.log('Error PUT en API externa, actualizando en local:', error?.message);
   }
 
   // Fallback local
   const local = await ensureLocalData();
-  let updatedItem = null;
+  let updatedItem: Resource | null = null;
   const updatedList = local.map((r) => {
     if (String(r.id) === String(id)) {
       updatedItem = { ...r, ...updatedFields };
@@ -112,7 +115,7 @@ export const updateResource = async (id, updatedFields) => {
 };
 
 // 4. ELIMINAR UN RECURSO (DELETE)
-export const deleteResource = async (id) => {
+export const deleteResource = async (id: string | number): Promise<boolean> => {
   const baseUrl = await getApiBaseUrl();
 
   try {
@@ -126,8 +129,8 @@ export const deleteResource = async (id) => {
       await AsyncStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filtered));
       return true;
     }
-  } catch (error) {
-    console.log('Error DELETE en API externa, eliminando en local:', error.message);
+  } catch (error: any) {
+    console.log('Error DELETE en API externa, eliminando en local:', error?.message);
   }
 
   // Fallback local
@@ -138,14 +141,17 @@ export const deleteResource = async (id) => {
 };
 
 // 5. CALIFICAR RECURSO (Rating 1-5 estrellas y actualización en backend)
-export const rateResource = async (id, ratingGiven) => {
+export const rateResource = async (
+  id: string | number,
+  ratingGiven: number
+): Promise<Resource | null> => {
   const resources = await getResources();
   const resource = resources.find((r) => String(r.id) === String(id));
 
   if (!resource) return null;
 
-  const currentAvg = parseFloat(resource.calificacion) || 0;
-  const totalVotes = parseInt(resource.totalVotos, 10) || 0;
+  const currentAvg = typeof resource.calificacion === 'number' ? resource.calificacion : parseFloat(String(resource.calificacion)) || 0;
+  const totalVotes = typeof resource.totalVotos === 'number' ? resource.totalVotos : parseInt(String(resource.totalVotos), 10) || 0;
 
   const newTotalVotes = totalVotes + 1;
   const newAvg = parseFloat(((currentAvg * totalVotes + ratingGiven) / newTotalVotes).toFixed(1));

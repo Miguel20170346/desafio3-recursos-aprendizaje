@@ -1,3 +1,5 @@
+import { PasswordRulesResult } from '../types';
+
 /**
  * Reglas de validación de contraseñas según la guía:
  * • Mínimo 12 caracteres.
@@ -6,7 +8,7 @@
  * • Al menos un número.
  * • Al menos un carácter especial (! @#$%^&*).
  */
-export const checkPasswordRules = (password = '') => {
+export const checkPasswordRules = (password: string = ''): PasswordRulesResult => {
   const minLength = password.length >= 12;
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
@@ -25,12 +27,12 @@ export const checkPasswordRules = (password = '') => {
   };
 };
 
-export const validateEmail = (email = '') => {
+export const validateEmail = (email: string = ''): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email.trim());
 };
 
-export const validateUrl = (url = '') => {
+export const validateUrl = (url: string = ''): boolean => {
   try {
     const trimmed = url.trim();
     return trimmed.startsWith('http://') || trimmed.startsWith('https://');

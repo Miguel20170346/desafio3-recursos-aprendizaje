@@ -2,10 +2,24 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Modal, Portal, Text, Button, useTheme } from 'react-native-paper';
 
-export default function RatingDialog({ visible, onDismiss, onSubmit, resourceTitle, currentRating = 0 }) {
+interface RatingDialogProps {
+  visible: boolean;
+  onDismiss: () => void;
+  onSubmit: (stars: number) => Promise<void>;
+  resourceTitle?: string;
+  currentRating?: number;
+}
+
+export default function RatingDialog({
+  visible,
+  onDismiss,
+  onSubmit,
+  resourceTitle,
+  currentRating = 0,
+}: RatingDialogProps) {
   const theme = useTheme();
-  const [selectedStars, setSelectedStars] = useState(5);
-  const [loading, setLoading] = useState(false);
+  const [selectedStars, setSelectedStars] = useState<number>(5);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleRate = async () => {
     setLoading(true);

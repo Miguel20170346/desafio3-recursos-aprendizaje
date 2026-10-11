@@ -5,22 +5,23 @@ import { getResources, rateResource } from '../../api/resourceService';
 import { useFavorites } from '../../context/FavoritesContext';
 import ResourceCard from '../../components/ResourceCard';
 import RatingDialog from '../../components/RatingDialog';
+import { Resource } from '../../types';
 
 export default function FavoritesScreen() {
   const theme = useTheme();
-  const { favoriteIds, toggleFavorite, isFavorite } = useFavorites();
+  const { favoriteIds, toggleFavorite } = useFavorites();
 
-  const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   // Calificación
-  const [ratingModalVisible, setRatingModalVisible] = useState(false);
-  const [selectedResource, setSelectedResource] = useState(null);
+  const [ratingModalVisible, setRatingModalVisible] = useState<boolean>(false);
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
 
   // Snackbar
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
 
   const fetchResourceData = useCallback(async () => {
     try {
@@ -43,18 +44,18 @@ export default function FavoritesScreen() {
     fetchResourceData();
   };
 
-  const handleToggleFavorite = (id) => {
+  const handleToggleFavorite = (id: string | number) => {
     toggleFavorite(id);
     setSnackbarMessage('Recurso removido de tus favoritos.');
     setSnackbarVisible(true);
   };
 
-  const handleOpenRating = (resource) => {
+  const handleOpenRating = (resource: Resource) => {
     setSelectedResource(resource);
     setRatingModalVisible(true);
   };
 
-  const handleSubmitRating = async (stars) => {
+  const handleSubmitRating = async (stars: number) => {
     if (!selectedResource) return;
     try {
       const updated = await rateResource(selectedResource.id, stars);
