@@ -8,8 +8,6 @@
 ## 📹 Video de Defensa del Desafío
 > **Enlace del Video de Defensa:**  
 > [Ver Video de Defensa en Google Drive](https://drive.google.com/file/d/1zVfngARTgdPVh22VqFet8WgOCJkE1X5V/view?usp=drive_link)
-> 
-> *Nota: Según la guía, la defensa debe iniciar demostrando la funcionalidad de la app y posteriormente explicando la arquitectura y código.*
 
 ---
 
@@ -29,46 +27,37 @@ La pantalla de inicio de sesión incluye botones de acceso rápido preconfigurad
 
 ---
 
-## 🛡️ Cumplimiento de Requisitos de la Rúbrica
+## 📱 Características y Funcionalidades
 
-### 1. Validación Estricta de Contraseñas (10%)
-La pantalla de Registro valida en tiempo real:
-* ✅ Mínimo 12 caracteres.
-* ✅ Al menos una letra mayúscula.
-* ✅ Al menos una letra minúscula.
-* ✅ Al menos un número.
-* ✅ Al menos un carácter especial (`!@#$%^&*`).
+### 1. Sistema de Autenticación y Seguridad
+* Registro e inicio de sesión con roles (**Estudiante** y **Docente**).
+* Validación en tiempo real de contraseñas seguras (mínimo 12 caracteres, mayúscula, minúscula, número y carácter especial).
+* Persistencia de sesión mediante AsyncStorage y cierre de sesión seguro.
 
-### 2. Autenticación y Control de Roles (10%)
-* Registro con selección de rol (*Estudiante* o *Docente*).
-* Persistencia de sesión mediante `@react-native-async-storage/async-storage`.
-* Cierre de sesión seguro con diálogo de confirmación.
+### 2. Catálogo de Recursos y Búsqueda Avanzada
+* Visualización en tarjetas con título, descripción, tipo de material, portada y enlace directo.
+* Búsqueda en tiempo real por ID (#), título o tipo de recurso.
+* Filtros interactivos por categoría (Libro, Video, Artículo, Tutorial) y ordenamiento alfabético o por calificación.
 
-### 3. Visualización y Búsqueda Avanzada (10%)
-* Tarjetas interactivas con título, descripción, tipo, imagen y enlace directo.
-* **Búsqueda avanzada:** Búsqueda en tiempo real por **ID (#)**, **título** o **tipo de recurso**.
-* **Filtros por categoría:** Chips interactivos para Todos, Libro, Video, Artículo y Tutorial.
-* **Ordenamiento:** Opciones para ordenar por Título (A-Z), Título (Z-A) y Mayor Calificación.
+### 3. Panel de Gestión del Docente (CRUD)
+* **Consultar:** Lista completa sincronizada con la API externa.
+* **Crear:** Formulario para agregar nuevos recursos con validación de URLs y campos obligatorios.
+* **Editar:** Formulario precargado para modificar cualquier recurso existente.
+* **Eliminar:** Confirmación de seguridad previa antes de eliminar un recurso en la base de datos.
 
-### 4. CRUD Completo Docente (25%)
-* **GET:** Obtención dinámica de la lista desde la API externa.
-* **POST:** Formulario de alta con validación rigurosa de campos (título, descripción, tipo, enlace).
-* **PUT:** Formulario de edición precargado con datos del recurso a modificar.
-* **DELETE:** Eliminación con modal de confirmación obligatoria previa.
+### 4. Interacción del Estudiante
+* **Favoritos:** Lista personal de recursos destacados que se mantiene guardada localmente en el dispositivo.
+* **Calificaciones:** Sistema de valoración de 1 a 5 estrellas que recalcula el promedio en la nube.
 
-### 5. Interacciones del Estudiante
-* **Favoritos:** Lista persistente por usuario almacenada localmente en AsyncStorage.
-* **Sistema de Calificación:** Diálogo modal interactivo para calificar de 1 a 5 estrellas, recalculando el promedio dinámico en el backend.
-
-### 6. UI/UX y Feedback Visual (15%)
-* Uso de la librería de diseño **React Native Paper** y **@expo/vector-icons**.
-* Indicadores de carga (*ActivityIndicator*), soporte *Pull-to-Refresh*, Snackbars para alertas y avisos toast.
+### 5. Diseño y Experiencia de Usuario
+* Interfaz responsiva desarrollada con React Native Paper y @expo/vector-icons.
+* Indicadores visuales de carga, soporte para refrescar deslizando hacia abajo (pull-to-refresh) y notificaciones de confirmación.
 
 ---
 
 ## 🌐 Configuración de la API REST (MockAPI)
 
-La app viene preconfigurada con un servicio desacoplado en `src/api/resourceService.js`.
+La app viene preconfigurada con un servicio desacoplado en `src/api/resourceService.ts`.
 * **Endpoint por defecto:** Compatible con MockAPI (`https://mockapi.io/`).
 * **Configuración personalizada:** Puedes cambiar la URL base en cualquier momento desde la pantalla de **Perfil > Configuración de API Externa** ingresando tu propia URL generada en MockAPI o Railway.
 
